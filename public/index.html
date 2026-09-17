@@ -485,7 +485,8 @@
         }
         setIsPlaying(false);
       };
-const handleVoiceAnalysisFlow = async () => {
+
+      const handleVoiceAnalysisFlow = async () => {
         setCurrentScreen('voiceAnalyzing');
         setVoiceAnalysisStep(0);
         setErrorMessage(null);
@@ -495,7 +496,6 @@ const handleVoiceAnalysisFlow = async () => {
           setTimeout(() => setVoiceAnalysisStep(2), 1200);
           setTimeout(() => setVoiceAnalysisStep(3), 1800);
 
-          // إرسال طلب بسيط وخالٍ من تعقيدات الملفات لكي يتعامل معه السيرفر بسلاسة
           const response = await fetch('http://localhost:8080/api/analyze-voice', {
             method: 'POST',
             headers: {
@@ -508,7 +508,7 @@ const handleVoiceAnalysisFlow = async () => {
 
           const data = await response.json();
           setAnalysisData(data);
-          setTimeout(() => setCurrentScreen('results'), 600);
+          setTimeout(() => setCurrentScreen('results'), 2400);
         } catch (error) {
           console.error(error);
           setErrorMessage('Error analyzing voice. Make sure server is running.');
@@ -541,7 +541,7 @@ const handleVoiceAnalysisFlow = async () => {
           
           const data = await response.json();
           setAnalysisData(data);
-          setTimeout(() => setCurrentScreen('results'), 600);
+          setTimeout(() => setCurrentScreen('results'), 2400);
         } catch (error) {
           console.error(error);
           setErrorMessage('Error analyzing text. Make sure server is running.');
@@ -549,40 +549,37 @@ const handleVoiceAnalysisFlow = async () => {
         }
       };
 
-      React.useEffect(() => {
-        if (currentScreen === 'analyzing' && imageFile) {
-          setAnalysisStep(0);
-          setErrorMessage(null);
+      const handleImageAnalysis = async () => {
+        if (!imageFile) return;
 
-          const runAnalysis = async () => {
-            try {
-              setTimeout(() => setAnalysisStep(1), 600);
-              setTimeout(() => setAnalysisStep(2), 1200);
-              setTimeout(() => setAnalysisStep(3), 1800);
+        setCurrentScreen('analyzing');
+        setAnalysisStep(0);
+        setErrorMessage(null);
 
-              const formData = new FormData();
-              formData.append('image', imageFile, imageFile.name);
+        try {
+          setTimeout(() => setAnalysisStep(1), 600);
+          setTimeout(() => setAnalysisStep(2), 1200);
+          setTimeout(() => setAnalysisStep(3), 1800);
 
-              const response = await fetch('http://localhost:8080/api/analyze', {
-                method: 'POST',
-                body: formData,
-              });
+          const formData = new FormData();
+          formData.append('image', imageFile, imageFile.name);
 
-              if (!response.ok) throw new Error('Failed to analyze image from backend.');
+          const response = await fetch('http://localhost:8080/api/analyze', {
+            method: 'POST',
+            body: formData,
+          });
 
-              const data = await response.json();
-              setAnalysisData(data);
-              setTimeout(() => setCurrentScreen('results'), 600);
-            } catch (error) {
-              console.error('Backend connection error:', error);
-              setErrorMessage('Could not connect to SIGNAL backend. Make sure server.js is running.');
-              setCurrentScreen('analyze');
-            }
-          };
+          if (!response.ok) throw new Error('Failed to analyze image from backend.');
 
-          runAnalysis();
+          const data = await response.json();
+          setAnalysisData(data);
+          setTimeout(() => setCurrentScreen('results'), 2400);
+        } catch (error) {
+          console.error('Backend connection error:', error);
+          setErrorMessage('Could not connect to SIGNAL backend. Make sure server.js is running.');
+          setCurrentScreen('analyze');
         }
-      }, [currentScreen, imageFile]);
+      };
 
       if (currentScreen === 'home') {
         return (
@@ -879,7 +876,7 @@ const handleVoiceAnalysisFlow = async () => {
             ) : (
               <div>
                 <img src={imageUri} className="large-preview-image" alt="Selected Preview" />
-                <button className="primary-button-black" onClick={() => setCurrentScreen('analyzing')}>
+                <button className="primary-button-black" onClick={handleImageAnalysis}>
                   Analyze Screenshot
                 </button>
                 <button className="text-button-center" onClick={() => { setImageUri(null); setImageFile(null); }}>
