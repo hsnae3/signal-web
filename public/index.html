@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGNAL - Understand what the message is doing</title>
+  <!-- React & Babel for running React directly in the browser -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background-color: #FAFAF9;
+      color: #111111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    #root {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: #FAFAF9;
+    }
+    .container-center {
+      width: 100%;
+      max-width: 600px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .scroll-content {
+      padding-bottom: 40px;
+    }
+    .header {
+      margin-bottom: 24px;
+      margin-top: 8px;
+    }
+    .brand-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #111111;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+    .brand-subtitle {
+      font-size: 14px;
+      color: #666666;
+      font-weight: 400;
+    }
+    .screen-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111111;
+      margin-bottom: 6px;
+    }
+    .screen-sub {
+      font-size: 14px;
+      color: #666666;
+    }
+    .intro-box {
+      margin-bottom: 20px;
+    }
+    .intro-text {
+      font-size: 15px;
+      color: #333333;
+      font-weight: 500;
+    }
+    .card-item {
+      background-color: #FFFFFF;
+      border: 1px solid #E5E5DF;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .card-item:hover {
+      border-color: #111111;
+    }
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .card-number {
+      font-size: 12px;
+      font-weight: 700;
+      color: #888888;
+      letter-spacing: 1px;
+    }
+    .card-icon {
+      font-size: 16px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111111;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: #666666;
+    }
+    .home-footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid #EFEFEB;
+    }
+    .footer-main-text {
+      font-size: 12px;
+      color: #888888;
+    }
+    .footer-sub-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: #444444;
+    }
+    .back-button {
+      margin-bottom: 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+    }
+    .back-button-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #111111;
+    }
+    .panel-box {
+      background-color: #FFFFFF;
+      border: 1px solid #E5E5DF;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .panel-category {
+      font-size: 11px;
+      font-weight: 700;
+      color: #888888;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+    .center-section {
+      text-align: center;
+      margin: 10px 0;
+    }
+    .primary-button-black {
+      width: 100%;
+      height: 50px;
+      background-color: #111111;
+      border-radius: 10px;
+      border: none;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+    .primary-button-black:hover {
+      background-color: #333333;
+    }
+    .secondary-button {
+      width: 100%;
+      height: 46px;
+      background-color: #FFFFFF;
+      border: 1px solid #E5E5DF;
+      border-radius: 10px;
+      color: #111111;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .danger-button {
+      width: 100%;
+      height: 46px;
+      background-color: #FEF2F2;
+      border: 1px solid #FCA5A5;
+      border-radius: 10px;
+      color: #991B1B;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .helper-text {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #666666;
+    }
+    .ready-label {
+      margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #111111;
+    }
+    .text-input-style {
+      width: 100%;
+      background-color: #FAFAF9;
+      border: 1px solid #E5E5DF;
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 120px;
+      resize: vertical;
+      font-size: 15px;
+      color: #111111;
+      margin-bottom: 14px;
+    }
+    .upload-area {
+      border: 1.5px dashed #D4D4D0;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      background-color: #FFFFFF;
+      height: 220px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .upload-icon-symbol {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .upload-prompt-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111111;
+      margin-bottom: 4px;
+    }
+    .upload-prompt-sub {
+      font-size: 12px;
+      color: #888888;
+    }
+    .large-preview-image {
+      width: 100%;
+      height: 280px;
+      border-radius: 12px;
+      background-color: #F3F3F0;
+      border: 1px solid #E5E5DF;
+      margin-bottom: 16px;
+      object-fit: contain;
+    }
+    .preview-card {
+      height: 130px;
+      background-color: #FFFFFF;
+      border-radius: 10px;
+      border: 1px solid #E5E5DF;
+      margin-bottom: 14px;
+      overflow: hidden;
+      padding: 6px;
+      display: flex;
+      justify-content: center;
+    }
+    .preview-thumb {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .result-card {
+      background-color: #FFFFFF;
+      border: 1px solid #E5E5DF;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .result-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #888888;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .result-text-body {
+      font-size: 14px;
+      color: #111111;
+      line-height: 20px;
+    }
+    .item-row {
+      margin-bottom: 8px;
+    }
+    .item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #111111;
+      margin-bottom: 2px;
+    }
+    .badge-text {
+      font-size: 12px;
+      font-weight: 500;
+      color: #666666;
+    }
+    .item-desc {
+      font-size: 13px;
+      color: #555555;
+      line-height: 18px;
+    }
+    .context-highlight-card {
+      background-color: #F5F5F3;
+      border: 1px solid #D4D4D0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .context-header {
+      font-size: 11px;
+      font-weight: 700;
+      color: #444444;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .context-sub {
+      font-size: 13px;
+      color: #555555;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+    .context-bullet, .think-bullet {
+      font-size: 13px;
+      line-height: 18px;
+      margin-bottom: 4px;
+    }
+    .context-bullet { color: #222222; }
+    .think-box-dark {
+      background-color: #111111;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .think-header {
+      font-size: 11px;
+      font-weight: 700;
+      color: #AAAAAA;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .think-bullet { color: #FFFFFF; }
+    .pipeline-container {
+      width: 100%;
+      max-width: 360px;
+      padding: 24px;
+      background-color: #FFFFFF;
+      border: 1px solid #E5E5DF;
+      border-radius: 12px;
+    }
+    .pipeline-header {
+      font-size: 12px;
+      font-weight: 700;
+      color: #888888;
+      letter-spacing: 1.5px;
+      margin-bottom: 20px;
+    }
+    .pipeline-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .pipeline-text {
+      font-size: 13px;
+      color: #999999;
+      font-weight: 500;
+    }
+    .pipeline-active {
+      color: #111111;
+      font-weight: 700;
+    }
+    .pipeline-status {
+      font-size: 10px;
+      font-family: monospace;
+      color: #666666;
+      letter-spacing: 1px;
+    }
+    .text-button-center {
+      padding: 10px;
+      text-align: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+    .text-button-label {
+      color: #555555;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .error-box {
+      background-color: #FEF2F2;
+      border: 1px solid #FCA5A5;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .error-text {
+      color: #991B1B;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    function App() {
+      const [currentScreen, setCurrentScreen] = React.useState('home');
+      const [imageUri, setImageUri] = React.useState(null);
+      const [imageFile, setImageFile] = React.useState(null);
+      const [analysisStep, setAnalysisStep] = React.useState(0);
+      const [analysisData, setAnalysisData] = React.useState(null);
+      const [errorMessage, setErrorMessage] = React.useState(null);
+
+      const [textInput, setTextInput] = React.useState('');
+
+      const [selectedAudioUri, setSelectedAudioUri] = React.useState(null);
+      const [selectedAudioFile, setSelectedAudioFile] = React.useState(null);
+      const [selectedAudioName, setSelectedAudioName] = React.useState(null);
+      const [isPlaying, setIsPlaying] = React.useState(false);
+      const [audioElement, setAudioElement] = React.useState(null);
+      const [voiceAnalysisStep, setVoiceAnalysisStep] = React.useState(0);
+
+      const handleImagePick = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          setImageFile(file);
+          setImageUri(URL.createObjectURL(file));
+          setErrorMessage(null);
+        }
+      };
+
+      const handleAudioPick = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          setSelectedAudioFile(file);
+          setSelectedAudioUri(URL.createObjectURL(file));
+          setSelectedAudioName(file.name);
+          setErrorMessage(null);
+        }
+      };
+
+      const playSelectedAudio = () => {
+        if (!selectedAudioUri) return;
+        if (audioElement) {
+          audioElement.pause();
+        }
+        const audio = new Audio(selectedAudioUri);
+        setAudioElement(audio);
+        setIsPlaying(true);
+        audio.play();
+        audio.onended = () => setIsPlaying(false);
+      };
+
+      const deleteSelectedAudio = () => {
+        setSelectedAudioUri(null);
+        setSelectedAudioFile(null);
+        setSelectedAudioName(null);
+        if (audioElement) {
+          audioElement.pause();
+          setAudioElement(null);
+        }
+        setIsPlaying(false);
+      };
+const handleVoiceAnalysisFlow = async () => {
+        setCurrentScreen('voiceAnalyzing');
+        setVoiceAnalysisStep(0);
+        setErrorMessage(null);
+
+        try {
+          setTimeout(() => setVoiceAnalysisStep(1), 600);
+          setTimeout(() => setVoiceAnalysisStep(2), 1200);
+          setTimeout(() => setVoiceAnalysisStep(3), 1800);
+
+          // إرسال طلب بسيط وخالٍ من تعقيدات الملفات لكي يتعامل معه السيرفر بسلاسة
+          const response = await fetch('http://localhost:8080/api/analyze-voice', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ filename: selectedAudioName || 'voice_note.wav' }),
+          });
+
+          if (!response.ok) throw new Error('Failed to analyze voice from backend.');
+
+          const data = await response.json();
+          setAnalysisData(data);
+          setTimeout(() => setCurrentScreen('results'), 600);
+        } catch (error) {
+          console.error(error);
+          setErrorMessage('Error analyzing voice. Make sure server is running.');
+          setCurrentScreen('voiceAnalyze');
+        }
+      };
+
+      const handleTextAnalysis = async () => {
+        if (!textInput.trim()) {
+          alert('Please enter some text to analyze.');
+          return;
+        }
+
+        setCurrentScreen('analyzing');
+        setAnalysisStep(0);
+        setErrorMessage(null);
+
+        try {
+          setTimeout(() => setAnalysisStep(1), 600);
+          setTimeout(() => setAnalysisStep(2), 1200);
+          setTimeout(() => setAnalysisStep(3), 1800);
+
+          const response = await fetch('http://localhost:8080/api/analyze-text', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: textInput }),
+          });
+
+          if (!response.ok) throw new Error('Failed to analyze text.');
+          
+          const data = await response.json();
+          setAnalysisData(data);
+          setTimeout(() => setCurrentScreen('results'), 600);
+        } catch (error) {
+          console.error(error);
+          setErrorMessage('Error analyzing text. Make sure server is running.');
+          setCurrentScreen('textAnalyze');
+        }
+      };
+
+      React.useEffect(() => {
+        if (currentScreen === 'analyzing' && imageFile) {
+          setAnalysisStep(0);
+          setErrorMessage(null);
+
+          const runAnalysis = async () => {
+            try {
+              setTimeout(() => setAnalysisStep(1), 600);
+              setTimeout(() => setAnalysisStep(2), 1200);
+              setTimeout(() => setAnalysisStep(3), 1800);
+
+              const formData = new FormData();
+              formData.append('image', imageFile, imageFile.name);
+
+              const response = await fetch('http://localhost:8080/api/analyze', {
+                method: 'POST',
+                body: formData,
+              });
+
+              if (!response.ok) throw new Error('Failed to analyze image from backend.');
+
+              const data = await response.json();
+              setAnalysisData(data);
+              setTimeout(() => setCurrentScreen('results'), 600);
+            } catch (error) {
+              console.error('Backend connection error:', error);
+              setErrorMessage('Could not connect to SIGNAL backend. Make sure server.js is running.');
+              setCurrentScreen('analyze');
+            }
+          };
+
+          runAnalysis();
+        }
+      }, [currentScreen, imageFile]);
+
+      if (currentScreen === 'home') {
+        return (
+          <div className="container">
+            <div className="scroll-content">
+              <div className="header">
+                <div className="brand-title">SIGNAL</div>
+                <div className="brand-subtitle">Understand what the message is doing.</div>
+              </div>
+
+              <div className="intro-box">
+                <div className="intro-text">Decode the signals behind what you see, read, or hear.</div>
+              </div>
+
+              <div className="card-item" onClick={() => setCurrentScreen('analyze')}>
+                <div className="card-header-row">
+                  <span className="card-number">01</span>
+                  <span className="card-icon">📷</span>
+                </div>
+                <div className="card-title">SCREENSHOT</div>
+                <div className="card-desc">Analyze visual and textual signals</div>
+              </div>
+
+              <div className="card-item" onClick={() => setCurrentScreen('textAnalyze')}>
+                <div className="card-header-row">
+                  <span className="card-number">02</span>
+                  <span className="card-icon">📝</span>
+                </div>
+                <div className="card-title">TEXT</div>
+                <div className="card-desc">Analyze language and framing</div>
+              </div>
+
+              <div className="card-item" onClick={() => setCurrentScreen('voiceAnalyze')}>
+                <div className="card-header-row">
+                  <span className="card-number">03</span>
+                  <span className="card-icon">🎙️</span>
+                </div>
+                <div className="card-title">VOICE</div>
+                <div className="card-desc">Analyze speech and emotional cues</div>
+              </div>
+
+              <div className="home-footer">
+                <div className="footer-main-text">Don't just read the message.</div>
+                <div className="footer-sub-text">Read the signals behind it.</div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      if (currentScreen === 'voiceAnalyze') {
+        return (
+          <div className="container">
+            <div className="scroll-content">
+              <button className="back-button" onClick={() => setCurrentScreen('home')}>
+                <span className="back-button-text">← Back</span>
+              </button>
+
+              <div className="header">
+                <div className="screen-title">Analyze Voice</div>
+                <div className="screen-sub">Select an audio file to uncover emotional cues.</div>
+              </div>
+
+              {errorMessage && (
+                <div className="error-box">
+                  <div className="error-text">{errorMessage}</div>
+                </div>
+              )}
+
+              <div className="panel-box">
+                <div className="panel-category">VOICE CAPTURE</div>
+                
+                {!selectedAudioUri ? (
+                  <div className="center-section">
+                    <label className="primary-button-black" style={{display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>
+                      📁 Select Audio File
+                      <input type="file" accept="audio/*" onChange={handleAudioPick} style={{display: 'none'}} />
+                    </label>
+                    <div className="helper-text">Choose an audio file from your device storage</div>
+                  </div>
+                ) : (
+                  <div className="center-section">
+                    <div className="ready-label">Selected: {selectedAudioName}</div>
+                    
+                    <button className="secondary-button" onClick={playSelectedAudio}>
+                      {isPlaying ? '⏸️ Pause' : '▶️ Play Audio'}
+                    </button>
+
+                    <button className="danger-button" onClick={deleteSelectedAudio}>
+                      🗑️ Choose Different File
+                    </button>
+
+                    <button className="primary-button-black" onClick={handleVoiceAnalysisFlow}>
+                      Analyze Audio File
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      if (currentScreen === 'textAnalyze') {
+        return (
+          <div className="container">
+            <div className="scroll-content">
+              <button className="back-button" onClick={() => setCurrentScreen('home')}>
+                <span className="back-button-text">← Back</span>
+              </button>
+
+              <div className="header">
+                <div className="screen-title">Analyze Text</div>
+                <div className="screen-sub">Evaluate rhetoric, framing, and structure.</div>
+              </div>
+
+              {errorMessage && (
+                <div className="error-box">
+                  <div className="error-text">{errorMessage}</div>
+                </div>
+              )}
+
+              <div className="panel-box">
+                <div className="panel-category">MESSAGE INPUT</div>
+                <textarea
+                  className="text-input-style"
+                  placeholder="Type or paste message content here..."
+                  value={textInput}
+                  onChange={(e) => setTextInput(e.target.value)}
+                />
+                <button className="primary-button-black" onClick={handleTextAnalysis}>
+                  Analyze Text
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      if (currentScreen === 'analyzing') {
+        return (
+          <div className="container-center">
+            <div className="pipeline-container">
+              <div className="pipeline-header">ANALYZING</div>
+              <div className="pipeline-row">
+                <span className={`pipeline-text ${analysisStep >= 0 ? 'pipeline-active' : ''}`}>01 Receiving input</span>
+                <span className="pipeline-status">{analysisStep >= 0 ? 'COMPLETE' : 'PENDING'}</span>
+              </div>
+              <div className="pipeline-row">
+                <span className={`pipeline-text ${analysisStep >= 1 ? 'pipeline-active' : ''}`}>02 Extracting content</span>
+                <span className="pipeline-status">{analysisStep >= 1 ? 'COMPLETE' : 'PENDING'}</span>
+              </div>
+              <div className="pipeline-row">
+                <span className={`pipeline-text ${analysisStep >= 2 ? 'pipeline-active' : ''}`}>03 Detecting emotional signals</span>
+                <span className="pipeline-status">{analysisStep >= 2 ? 'COMPLETE' : 'PENDING'}</span>
+              </div>
+              <div className="pipeline-row">
+                <span className={`pipeline-text ${analysisStep >= 3 ? 'pipeline-active' : ''}`}>04 Examining persuasion patterns</span>
+                <span className="pipeline-status">{analysisStep >= 3 ? 'COMPLETE' : 'PENDING'}</span>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      if (currentScreen === 'voiceAnalyzing') {
+        return (
+          <div className="container-center">
+            <div className="pipeline-container">
+              <div className="pipeline-header">ANALYZING</div>
+              <div className="pipeline-row">
+                <span className={`pipeline-text ${voiceAnalysisStep >= 0 ? 'pipeline-active' : ''}`}>01 Transcribing voice</span>
+                <span className="pipeline-status">{voiceAnalysisStep >= 0 ? 'COMPLETE' : 'PENDING'}</span>
+              </div>
+              <div className="pipeline-row">
+                <span className={`pipeline-text ${voiceAnalysisStep >= 1 ? 'pipeline-active' : ''}`}>02 Detecting emotional signals</span>
+                <span className="pipeline-status">{voiceAnalysisStep >= 1 ? 'COMPLETE' : 'PENDING'}</span>
+              </div>
+              <div className="pipeline-row">
+                <span className={`pipeline-text ${voiceAnalysisStep >= 2 ? 'pipeline-active' : ''}`}>03 Examining persuasion patterns</span>
+                <span className="pipeline-status">{voiceAnalysisStep >= 2 ? 'COMPLETE' : 'PENDING'}</span>
+              </div>
+              <div className="pipeline-row">
+                <span className={`pipeline-text ${voiceAnalysisStep >= 3 ? 'pipeline-active' : ''}`}>04 Identifying missing context</span>
+                <span className="pipeline-status">{voiceAnalysisStep >= 3 ? 'COMPLETE' : 'PENDING'}</span>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      if (currentScreen === 'results' && analysisData) {
+        return (
+          <div className="container">
+            <div className="scroll-content">
+              <button className="back-button" onClick={() => setCurrentScreen('home')}>
+                <span className="back-button-text">← Back</span>
+              </button>
+
+              <div className="header">
+                <div className="screen-title">SIGNAL ANALYSIS</div>
+                <div className="screen-sub">Decoding communication patterns</div>
+              </div>
+
+              {imageUri && (
+                <div className="preview-card">
+                  <img src={imageUri} className="preview-thumb" alt="Preview" />
+                </div>
+              )}
+
+              {analysisData?.transcript && (
+                <div className="result-card">
+                  <div className="result-section-label">TRANSCRIPT</div>
+                  <div className="result-text-body">"{analysisData.transcript}"</div>
+                </div>
+              )}
+
+              <div className="result-card">
+                <div className="result-section-label">SECTION 01 / SUMMARY</div>
+                <div className="result-text-body">{analysisData?.summary}</div>
+              </div>
+
+              <div className="result-card">
+                <div className="result-section-label">SECTION 02 / EMOTIONAL SIGNALS</div>
+                {analysisData?.emotionalSignals?.map((item, idx) => (
+                  <div key={idx} className="item-row">
+                    <div className="item-title">• {item.name} <span className="badge-text">({item.level})</span></div>
+                    <div className="item-desc">{item.evidence}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="result-card">
+                <div className="result-section-label">SECTION 03 / PERSUASION PATTERNS</div>
+                {analysisData?.persuasionPatterns?.map((item, idx) => (
+                  <div key={idx} className="item-row">
+                    <div className="item-title">• {item.name} <span className="badge-text">({item.strength})</span></div>
+                    <div className="item-desc">{item.explanation}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="context-highlight-card">
+                <div className="context-header">SECTION 04 / MISSING CONTEXT</div>
+                <div className="context-sub">What information would help you evaluate this message?</div>
+                {(analysisData?.missingContext || []).map((item, idx) => (
+                  <div key={idx} className="context-bullet">• {item}</div>
+                ))}
+              </div>
+
+              <div className="think-box-dark">
+                <div className="think-header">SECTION 05 / THINK BEFORE YOU SHARE</div>
+                {(analysisData?.reflectionQuestions || []).map((q, idx) => (
+                  <div key={idx} className="think-bullet">• {q}</div>
+                ))}
+              </div>
+
+              <button 
+                className="primary-button-black" 
+                onClick={() => { setCurrentScreen('home'); setImageUri(null); setImageFile(null); setAnalysisData(null); setTextInput(''); setSelectedAudioUri(null); setSelectedAudioFile(null); setSelectedAudioName(null); }}
+              >
+                Analyze Another Message
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="container">
+          <div className="scroll-content">
+            <button className="back-button" onClick={() => { setCurrentScreen('home'); setImageUri(null); setImageFile(null); }}>
+              <span className="back-button-text">← Back</span>
+            </button>
+
+            <div className="header">
+              <div className="screen-title">Analyze Screenshot</div>
+              <div className="screen-sub">Upload visual material to evaluate communication signals.</div>
+            </div>
+
+            {errorMessage && (
+              <div className="error-box">
+                <div className="error-text">{errorMessage}</div>
+              </div>
+            )}
+
+            {!imageUri ? (
+              <label className="upload-area">
+                <div className="upload-icon-symbol">📷</div>
+                <div className="upload-prompt-title">Select a screenshot</div>
+                <div className="upload-prompt-sub">Choose image file from local device storage</div>
+                <input type="file" accept="image/*" onChange={handleImagePick} style={{display: 'none'}} />
+              </label>
+            ) : (
+              <div>
+                <img src={imageUri} className="large-preview-image" alt="Selected Preview" />
+                <button className="primary-button-black" onClick={() => setCurrentScreen('analyzing')}>
+                  Analyze Screenshot
+                </button>
+                <button className="text-button-center" onClick={() => { setImageUri(null); setImageFile(null); }}>
+                  <span className="text-button-label">Choose a different file</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
